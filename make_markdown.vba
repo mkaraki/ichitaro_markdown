@@ -12,6 +12,7 @@ declare variable %isItalicNext
 declare variable %markdownFile
 declare variable %markdownHeadingStartLevel
 declare variable %cursorChar
+declare variable %docPath
 
 %markdownHeadingStartLevel = 2
 
@@ -24,8 +25,11 @@ if GetCursorArea() <> 1 then
 	stop
 end if
 
+!! Get document path
+%docPath = GetDocumentName(1)
+
 !! Open Markdown file with SharedenyWrite (No write share), Text mode, Unicode (UTF-16?)
-set %markdownFile = CreateFile("TestMarkdown.md", &H0010, 1, 5)
+set %markdownFile = CreateFile(%docPath & ".md", &H0010, 1, 5)
 
 !! Set cursor Start of Document
 JumpStart()
