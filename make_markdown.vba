@@ -1,6 +1,7 @@
 option explicit
 
 declare variable c
+declare variable i
 declare variable %isBold
 declare variable %isItalic
 declare variable %lastLine
@@ -37,12 +38,6 @@ do
 		exit do
 	end if
 	
-	if GetPage() > 6 then
-		!! ToDo: Impl more better end of content detection
-		Message("Page limit exceeded")
-		exit do
-	end if
-	
 	EndOfParagraph()
 	%paragEnd(1) = GetPage()
 	%paragEnd(2) = GetRow()
@@ -50,6 +45,56 @@ do
 	StartOfParagraph()
 	
 	!! ToDo: Get outline level
+	
+	select case GetParagraphStyleName()
+		case "文書ﾀｲﾄﾙ(ｵｰﾄｽﾀｲﾙ)"
+			if %markdownHeadingStartLevel >= 2 then
+				for i = 1 to %markdownHeadingStartLevel - 1
+					%markdownFile.Write("#")
+				next
+				%markdownFile.Write(" ")
+			end if
+		case "大見出し(ｵｰﾄｽﾀｲﾙ)"
+			for i = 1 to %markdownHeadingStartLevel - 1 + 1
+				%markdownFile.Write("#")
+			next
+			%markdownFile.Write(" ")
+		case "中見出し(ｵｰﾄｽﾀｲﾙ)"
+			for i = 1 to %markdownHeadingStartLevel - 1 + 2
+				%markdownFile.Write("#")
+			next
+			%markdownFile.Write(" ")
+		case "小見出し(ｵｰﾄｽﾀｲﾙ)"
+			for i = 1 to %markdownHeadingStartLevel - 1 + 3
+				%markdownFile.Write("#")
+			next
+			%markdownFile.Write(" ")
+		case "小見出し2(ｵｰﾄｽﾀｲﾙ)"
+			for i = 1 to %markdownHeadingStartLevel - 1 + 4
+				%markdownFile.Write("#")
+			next
+			%markdownFile.Write(" ")
+		case "小見出し3(ｵｰﾄｽﾀｲﾙ)"
+			for i = 1 to %markdownHeadingStartLevel - 1 + 5
+				%markdownFile.Write("#")
+			next
+			%markdownFile.Write(" ")
+		case "小見出し4(ｵｰﾄｽﾀｲﾙ)"
+			for i = 1 to %markdownHeadingStartLevel - 1 + 5
+				%markdownFile.Write("#")
+			next
+			%markdownFile.Write(" ")
+		case "小見出し5(ｵｰﾄｽﾀｲﾙ)"
+			for i = 1 to %markdownHeadingStartLevel - 1 + 6
+				%markdownFile.Write("#")
+			next
+			%markdownFile.Write(" ")
+		case "箇条書き(ｵｰﾄｽﾀｲﾙ)"
+			%markdownFile.Write("- ")
+		case "箇条書きの説明(ｵｰﾄｽﾀｲﾙ)"
+			%markdownFile.Write("  ")
+	end select
+			
 
 	%isBold = false
 	%isItalic = false
