@@ -4,8 +4,8 @@ declare variable c
 declare variable %isBold
 declare variable %isItalic
 declare variable %lastLine
-declare variable %lineContent
-declare variable %lineLength
+declare variable %paragEnd(3)
+declare variable %paragLength
 declare variable %isBoldNext
 declare variable %isItalicNext
 declare variable %markdownFile
@@ -24,7 +24,7 @@ if GetCursorArea() <> 1 then
 end if
 
 !! Open Markdown file with SharedenyWrite (No write share), Text mode, Unicode (UTF-16?)
-set %markdownFile = CreateFile("TestMarkdown.md", &H0010, 1, 5)
+set %markdownFile = CreateFile("C:\Users\araki-mk\OneDrive - mkarakiapps\Documents\TestMarkdown.md", &H0010, 1, 5)
 
 !! Set cursor Start of Document
 JumpStart()
@@ -37,25 +37,24 @@ do
 		exit do
 	end if
 	
-	if GetPage() > 2 then
+	if GetPage() > 6 then
+		!! ToDo: Impl more better end of content detection
 		Message("Page limit exceeded")
 		exit do
 	end if
 	
-	EndOfLine()
-	%lineLength = GetColumn()
-	StartOfLine()
+	EndOfParagraph()
+	%paragEnd(1) = GetPage()
+	%paragEnd(2) = GetRow()
+	%paragEnd(3) = GetColumn()
+	StartOfParagraph()
 	
 	!! ToDo: Get outline level
 
 	%isBold = false
 	%isItalic = false
-	
-	if GetRow() = 1 then
-		Message(%lineLength)
-	end if
-	
-	for c = 1 to %lineLength step 1
+
+	do
 		%cursorChar = GetCharacter()
 	
 		%isBoldNext = IsBold()
@@ -78,14 +77,24 @@ do
 		
 		%markdownFile.Write(%cursorChar)
 		
-		CursorRight()
-	next
+		if GetPage() = %paragEnd(1) and GetRow() = %paragEnd(2) and GetColumn() = %paragEnd(3) then
+			exit do
+		else
+			CursorRight()
+		end if
+	loop
 	
 	%markdownFile.Write(Char(10, 5))
+	%markdownFile.Write(Char(10, 5))
 	
-	!! Next line (line++)
-	!! Last cursor right cause line skip. So, we don't need it.
-	!! NextLine(1)
+	!! Next paragraph
+	NextParagraph(1)
+	
+	if GetPage() = %paragEnd(1) and GetRow() = %paragEnd(2) and GetColumn() = %paragEnd(3) then
+		!! Nothing new.
+		Message("Ended")
+		exit do
+	end if
 loop
 
 %markdownFile.Close()
