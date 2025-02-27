@@ -25,7 +25,7 @@ if GetCursorArea() <> 1 then
 end if
 
 !! Open Markdown file with SharedenyWrite (No write share), Text mode, Unicode (UTF-16?)
-set %markdownFile = CreateFile("C:\Users\araki-mk\OneDrive - mkarakiapps\Documents\TestMarkdown.md", &H0010, 1, 5)
+set %markdownFile = CreateFile("TestMarkdown.md", &H0010, 1, 5)
 
 !! Set cursor Start of Document
 JumpStart()
